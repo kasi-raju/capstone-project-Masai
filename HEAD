@@ -1,0 +1,10 @@
+0000000000000000000000000000000000000000 046c7cd3e6ed2b7eb9c02715a46859e16eeae1fb Student <student@example.com> 1786514134 +0000	commit (initial): Initial commit
+046c7cd3e6ed2b7eb9c02715a46859e16eeae1fb 0000000000000000000000000000000000000000 Student <student@example.com> 1786514134 +0000	Branch: renamed refs/heads/master to refs/heads/main
+0000000000000000000000000000000000000000 046c7cd3e6ed2b7eb9c02715a46859e16eeae1fb Student <student@example.com> 1786514134 +0000	Branch: renamed refs/heads/master to refs/heads/main
+046c7cd3e6ed2b7eb9c02715a46859e16eeae1fb 046c7cd3e6ed2b7eb9c02715a46859e16eeae1fb Student <student@example.com> 1786514293 +0000	checkout: moving from main to feature/data-pipeline
+046c7cd3e6ed2b7eb9c02715a46859e16eeae1fb 6d9c402d7609b31d70782e583e9c9f75fea7b883 Student <student@example.com> 1786514293 +0000	commit: data_pipeline: add scraper and raw scraped data (4 categories, 81 books)
+6d9c402d7609b31d70782e583e9c9f75fea7b883 e1a2fb4eae171762b1448df74dd135af8f597778 Student <student@example.com> 1786514293 +0000	commit: data_pipeline: clean/type data, convert to INR, build normalized SQLite schema
+e1a2fb4eae171762b1448df74dd135af8f597778 82db32a5dc8dc96dc1282444c84a7beda90f8066 Student <student@example.com> 1786514293 +0000	commit: data_pipeline: add required SQL queries, pandas equivalence check, and README
+82db32a5dc8dc96dc1282444c84a7beda90f8066 046c7cd3e6ed2b7eb9c02715a46859e16eeae1fb Student <student@example.com> 1786514293 +0000	checkout: moving from feature/data-pipeline to main
+046c7cd3e6ed2b7eb9c02715a46859e16eeae1fb 82db32a5dc8dc96dc1282444c84a7beda90f8066 Student <student@example.com> 1786514293 +0000	merge feature/data-pipeline: Fast-forward (no commit created; -m option ignored)
+82db32a5dc8dc96dc1282444c84a7beda90f8066 ea90a53641c5a0f5a678ad3335f157f25d8b01eb Student <student@example.com> 1786514310 +0000	commit: root README summarizing module 1
