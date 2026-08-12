@@ -1,0 +1,134 @@
+Loaded cleaned data from titanic.csv (continuing from 01_eda.py): (889, 14)
+
+====================================================================== 
+TASK 7: STRATIFIED TRAIN/TEST SPLIT
+ ======================================================================
+Overall class balance (survived):
+survived
+0    0.618
+1    0.382
+Name: proportion, dtype: float64
+
+Train shape: (711, 7), Test shape: (178, 7)
+Train class balance:
+ survived
+0    0.617
+1    0.383
+Name: proportion, dtype: float64
+Test class balance:
+ survived
+0    0.618
+1    0.382
+Name: proportion, dtype: float64
+
+Justification for stratification: survived is imbalanced (38.2% survived vs 61.8% did not). A plain random split can, by chance, over- or under-represent the minority class in either split, which would make test metrics noisy/misleading and could starve the training set of minority examples. stratify=y guarantees both splits keep (approximately) the same ~38%/62% ratio as the full dataset, which the printed balances above confirm.
+
+====================================================================== 
+TASK 8: PREPROCESSING (fit on train only)
+ ======================================================================
+ColumnTransformer built: numeric ->[median impute, scale], categorical ->[most-frequent impute, one-hot]. It will only ever be .fit() on X_train inside each model's Pipeline.
+
+====================================================================== 
+TASK 9: TRAIN 3 CLASSIFIERS
+ ======================================================================
+Trained: Logistic Regression
+Trained: Decision Tree
+Trained: Random Forest
+Saved charts/decision_tree.png
+
+====================================================================== 
+TASK 10: EVALUATE ALL 3 CLASSIFIERS
+ ======================================================================
+
+--- Logistic Regression ---
+Confusion matrix:
+ [[97 13]
+ [21 47]]
+Accuracy=0.809 Precision=0.783 Recall=0.691 F1=0.734 AUC=0.861
+
+--- Decision Tree ---
+Confusion matrix:
+ [[98 12]
+ [30 38]]
+Accuracy=0.764 Precision=0.760 Recall=0.559 F1=0.644 AUC=0.837
+
+--- Random Forest ---
+Confusion matrix:
+ [[95 15]
+ [19 49]]
+Accuracy=0.809 Precision=0.766 Recall=0.721 F1=0.742 AUC=0.820
+
+=== Classifier comparison table ===
+                     Accuracy  Precision  Recall     F1    AUC
+Model                                                         
+Logistic Regression     0.809      0.783   0.691  0.734  0.861
+Decision Tree           0.764      0.760   0.559  0.644  0.837
+Random Forest           0.809      0.766   0.721  0.742  0.820
+
+====================================================================== 
+TASK 11: IMBALANCE HANDLING COMPARISON
+ ======================================================================
+Class balance (train):
+survived
+0    439
+1    272
+Name: count, dtype: int64
+survived
+0    0.617
+1    0.383
+Name: proportion, dtype: float64
+-> moderate imbalance (~62/38), not extreme, but worth comparing strategies.
+
+After SMOTE, training class balance: [439 439] (classes now balanced 1:1, test set untouched)
+
+=== Imbalance handling comparison (Random Forest) ===
+                         Precision  Recall     F1
+Strategy                                         
+Baseline (no handling)       0.766   0.721  0.742
+class_weight='balanced'      0.766   0.721  0.742
+SMOTE (train fold only)      0.761   0.750  0.756
+
+====================================================================== 
+TASK 12: HYPERPARAMETER TUNING (GridSearchCV) + OOB
+ ======================================================================
+Best params: {'max_depth': 5, 'max_features': 'sqrt', 'n_estimators': 300}
+Best CV accuracy: 0.82
+OOB score of best estimator: 0.8214
+
+====================================================================== 
+TASK 13: REGRESSION SIDE-TASK -- PREDICT FARE
+ ======================================================================
+MAE=21.099  RMSE=41.702  R2=0.348  Adjusted R2=0.321
+Saved charts/regression_residuals.png
+
+====================================================================== 
+TASK 14: FINAL MODEL COMPARISON TABLE
+ ======================================================================
+
+--- Classification metrics (accuracy/precision/recall/F1/AUC) ---
+                     Accuracy  Precision  Recall     F1    AUC
+Model                                                         
+Logistic Regression     0.809      0.783   0.691  0.734  0.861
+Decision Tree           0.764      0.760   0.559  0.644  0.837
+Random Forest           0.809      0.766   0.721  0.742  0.820
+
+--- Regression metrics (fare prediction: MAE/RMSE/R2/Adjusted R2) ---
+MAE            21.099
+RMSE           41.702
+R2              0.348
+Adjusted_R2     0.321
+dtype: float64
+
+Final recommendation: I would deploy the Random Forest classifier. It ties Logistic Regression for the best accuracy (0.809) but has the highest recall (0.721 vs 0.691) and highest F1 (0.742 vs 0.734) of the three models, meaning it catches more actual survivors while keeping precision comparable (0.766 vs 0.783). Logistic Regression has a slightly higher AUC (0.861 vs 0.820), so it ranks probabilities a bit more reliably overall, but for a deployed classifier making concrete survived/died calls, Random Forest's better recall/F1 balance and its resistance to overfitting (vs. the single Decision Tree, which is clearly weakest at accuracy=0.764) make it the safer choice.
+
+====================================================================== 
+TASK 15: SAVE + RELOAD FULL PIPELINE
+ ======================================================================
+Saved full_pipeline to titanic_survival_pipeline.joblib
+
+Reloaded pipeline prediction on raw new passenger: survived=1 (P(survive)=1.000)
+Confirms the saved artifact preprocesses raw input end-to-end, without needing any manual pre-transform step.
+
+======================================================================
+02_modeling.py complete.
+======================================================================

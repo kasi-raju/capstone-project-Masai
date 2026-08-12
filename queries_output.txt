@@ -1,0 +1,148 @@
+
+--- Q1: Books in stock under 20 GBP (SELECT / WHERE) ---
+SELECT title, price_gbp, in_stock
+        FROM books
+        WHERE in_stock = 1 AND price_gbp < 20;
+['title', 'price_gbp', 'in_stock']
+('The Coming Woman: A Novel Based on the Life of the Infamous Feminist Victoria Woodhull', 17.93, 1)
+('In a Dark Dark Wood', 19.63, 1)
+('A Murder in Time', 16.64, 1)
+('That Darkness (Gardiner and Renner #1)', 13.92, 1)
+('Tastes Like Fear (DI Marnie Rome #3)', 10.69, 1)
+('A Study in Scarlet (Sherlock Holmes #1)', 16.73, 1)
+('Hide Away (Eve Duncan #20)', 11.84, 1)
+('Playing with Fire', 13.71, 1)
+('Lilac Girls', 17.28, 1)
+('The Constant Princess (The Tudor Court #1)', 16.62, 1)
+('Tsubasa: WoRLD CHRoNiCLE 2 (Tsubasa WoRLD CHRoNiCLE #2)', 16.28, 1)
+('This One Summer', 19.49, 1)
+('Princess Jellyfish 2-in-1 Omnibus Vol. 01', 13.61, 1)
+('Pop Gun War Volume 1: Gift', 18.97, 1)
+('Patience', 10.16, 1)
+('Outcast Vol. 1: A Darkness Surrounds Him (Outcast #1)', 15.44, 1)
+('Lumberjanes Vol. 3: A Terrible Plan (Lumberjanes #9-12)', 19.92, 1)
+('Camp Midnight', 17.08, 1)
+
+--- Q2: 10 most expensive books (ORDER BY / LIMIT) ---
+SELECT title, price_gbp
+        FROM books
+        ORDER BY price_gbp DESC
+        LIMIT 10;
+['title', 'price_gbp']
+('Boar Island (Anna Pigeon #19)', 59.48)
+('A Year in Provence (Provence #1)', 56.88)
+('The Past Never Ends', 56.5)
+('The Last Painting of Sara de Vos', 55.55)
+('A Flight of Arrows (The Pathfinders #2)', 55.53)
+('I am a Hero Omnibus Volume 1', 54.63)
+('Murder at the 42nd Street Library (Raymond Ambler #1)', 54.36)
+('Sapiens: A Brief History of Humankind', 54.23)
+('The Last Mile (Amos Decker #2)', 54.21)
+('Tipping the Velvet', 53.74)
+
+--- Q3: Distinct categories present (DISTINCT) ---
+SELECT DISTINCT category_name
+        FROM categories
+        ORDER BY category_name;
+['category_name']
+('Biography',)
+('Business',)
+('Fiction',)
+('Historical Fiction',)
+('History',)
+('Mystery',)
+('Nonfiction',)
+('Poetry',)
+('Sequential Art',)
+('Travel',)
+('Young Adult',)
+
+--- Q4: Mid-priced books, 20-40 GBP, rated 4 or 5 (BETWEEN + IN) ---
+SELECT title, price_gbp, rating
+        FROM books
+        WHERE price_gbp BETWEEN 20 AND 40
+          AND rating IN (4, 5)
+        ORDER BY price_gbp;
+['title', 'price_gbp', 'rating']
+('Giant Days Vol. 2 (Giant Days #5-8)', 22.11, 4)
+('The Boys in the Boat: Nine Americans and Their Epic Quest for Gold at the 1936 Berlin Olympics', 22.6, 4)
+('What Happened on Beale Street (Secrets of the South Mysteries #2)', 25.37, 5)
+('1000 Places to See Before You Die', 26.08, 5)
+('Girl With a Pearl Earring', 26.77, 4)
+('The Widow', 27.26, 4)
+('The Marriage of Opposites', 28.08, 4)
+('World Without End (The Pillars of the Earth #2)', 32.97, 4)
+('The Dirty Little Secrets of Getting Your Dream Job', 33.34, 4)
+('The House by the Lake', 36.95, 4)
+('A Paris Apartment', 39.01, 4)
+
+--- Q5: Five-star books per category (JOIN) ---
+SELECT c.category_name, b.title, b.rating, b.price_gbp
+        FROM books b
+        JOIN categories c ON b.category_id = c.category_id
+        WHERE b.rating = 5
+        ORDER BY c.category_name, b.price_gbp DESC;
+['category_name', 'title', 'rating', 'price_gbp']
+('Historical Fiction', 'The Last Painting of Sara de Vos', 5, 55.55)
+('Historical Fiction', 'A Flight of Arrows (The Pathfinders #2)', 5, 55.53)
+('Historical Fiction', 'Lilac Girls', 5, 17.28)
+('Mystery', 'Boar Island (Anna Pigeon #19)', 5, 59.48)
+('Mystery', 'What Happened on Beale Street (Secrets of the South Mysteries #2)', 5, 25.37)
+('Mystery', 'In a Dark Dark Wood', 5, 19.63)
+('Nonfiction', 'Sapiens: A Brief History of Humankind', 5, 54.23)
+('Sequential Art', "Scott Pilgrim's Precious Little Life (Scott Pilgrim #1)", 5, 52.29)
+('Sequential Art', 'Danganronpa Volume 1', 5, 51.99)
+('Sequential Art', 'Lumberjanes Vol. 3: A Terrible Plan (Lumberjanes #9-12)', 5, 19.92)
+('Sequential Art', 'Patience', 5, 10.16)
+('Travel', '1000 Places to See Before You Die', 5, 26.08)
+
+=== pd.read_sql vs pd.merge equivalence check ===
+
+pd.read_sql result:
+         category_name  ... price_gbp
+0   Historical Fiction  ...     55.55
+1   Historical Fiction  ...     55.53
+2   Historical Fiction  ...     17.28
+3              Mystery  ...     59.48
+4              Mystery  ...     25.37
+5              Mystery  ...     19.63
+6           Nonfiction  ...     54.23
+7       Sequential Art  ...     52.29
+8       Sequential Art  ...     51.99
+9       Sequential Art  ...     19.92
+10      Sequential Art  ...     10.16
+11              Travel  ...     26.08
+
+[12 rows x 4 columns]
+
+pd.merge result:
+         category_name  ... price_gbp
+0   Historical Fiction  ...     55.55
+1   Historical Fiction  ...     55.53
+2   Historical Fiction  ...     17.28
+3              Mystery  ...     59.48
+4              Mystery  ...     25.37
+5              Mystery  ...     19.63
+6           Nonfiction  ...     54.23
+7       Sequential Art  ...     52.29
+8       Sequential Art  ...     51.99
+9       Sequential Art  ...     19.92
+10      Sequential Art  ...     10.16
+11              Travel  ...     26.08
+
+[12 rows x 4 columns]
+
+Results match: True
+
+--- Q2 read back via pd.read_sql ---
+                                               title  price_gbp
+0                      Boar Island (Anna Pigeon #19)      59.48
+1                   A Year in Provence (Provence #1)      56.88
+2                                The Past Never Ends      56.50
+3                   The Last Painting of Sara de Vos      55.55
+4            A Flight of Arrows (The Pathfinders #2)      55.53
+5                       I am a Hero Omnibus Volume 1      54.63
+6  Murder at the 42nd Street Library (Raymond Amb...      54.36
+7              Sapiens: A Brief History of Humankind      54.23
+8                     The Last Mile (Amos Decker #2)      54.21
+9                                 Tipping the Velvet      53.74
